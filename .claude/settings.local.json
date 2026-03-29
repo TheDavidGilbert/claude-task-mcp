@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm info:*)",
+      "Bash(node -e \"const d=JSON.parse\\(require\\(''''fs''''\\).readFileSync\\(''''/dev/stdin'''',''''utf8''''\\)\\); console.log\\(''''version:'''', d.version\\); console.log\\(''''exports:'''', JSON.stringify\\(Object.keys\\(d.exports||{}\\), null, 2\\)\\); console.log\\(''''main:'''', d.main\\); console.log\\(''''module:'''', d.module\\); console.log\\(''''types:'''', d.types\\);\")",
+      "Bash(node -e \"const d=JSON.parse\\(require\\(''''fs''''\\).readFileSync\\(''''/dev/stdin'''',''''utf8''''\\)\\); console.log\\(''''version:'''', d.version\\); console.log\\(''''types:'''', d.types\\); console.log\\(''''@types/better-sqlite3 exists?''''\\);\")",
+      "Bash(npm show:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
