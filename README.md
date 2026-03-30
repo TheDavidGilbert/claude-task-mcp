@@ -24,34 +24,22 @@ npm run build
 
 ## Claude Code configuration
 
-Add to your `~/.claude/settings.json`. Two options:
-
-**Per-repo** (recommended — no need to pass `project_path` on each call):
-```json
-{
-  "mcpServers": {
-    "tasks": {
-      "command": "node",
-      "args": ["/absolute/path/to/claude-task-mcp/dist/index.js"],
-      "env": {
-        "CLAUDE_TASKS_CWD": "/absolute/path/to/your/repo"
-      }
-    }
-  }
-}
-```
+Use the `claude mcp add` CLI to register the server. MCP servers are stored in `~/.claude.json` — do **not** add `mcpServers` to `~/.claude/settings.json`, it is not a valid field there.
 
 **Global** (one server, works across all repos — pass `project_path` on each call):
-```json
-{
-  "mcpServers": {
-    "tasks": {
-      "command": "node",
-      "args": ["/absolute/path/to/claude-task-mcp/dist/index.js"]
-    }
-  }
-}
+```bash
+claude mcp add --scope user tasks node "/absolute/path/to/claude-task-mcp/dist/index.js"
 ```
+
+**Per-repo** (no need to pass `project_path` on each call — run from inside the repo):
+```bash
+claude mcp add --scope local tasks node "/absolute/path/to/claude-task-mcp/dist/index.js" \
+  -e CLAUDE_TASKS_CWD="/absolute/path/to/your/repo"
+```
+
+> **Note:** The default scope for `claude mcp add` is `local` (project-level). Always specify `--scope user` for global registration, otherwise it will only apply to the current project.
+
+After adding, restart Claude Code and run `/mcp` to confirm the `tasks` server is connected.
 
 ## Tools
 

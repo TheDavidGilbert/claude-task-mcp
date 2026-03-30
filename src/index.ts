@@ -112,6 +112,7 @@ process.on('SIGTERM', () => process.exit(0));
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
+  console.error('claude-task-mcp running (stdio)');
 }
 
 main().catch(err => {
