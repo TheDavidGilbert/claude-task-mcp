@@ -66,8 +66,6 @@ The prefix is derived from your repo's directory name on first use:
 | Directory name | Prefix |
 |---------------|--------|
 | `claude-task-mcp` | `CTM` |
-| `universal-lottery` | `UL` |
-| `lotaroo` | `LOT` |
 
 ## Development
 
