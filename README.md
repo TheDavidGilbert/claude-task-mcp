@@ -113,8 +113,8 @@ The prefix is derived from your repo's directory name on first use:
 | Directory name | Prefix |
 |----------------|--------|
 | `claude-task-mcp` | `CTM` |
-| `universal-lottery` | `ULO` |
-| `lotaroo` | `LOT` |
+| `language-server` | `LS` |
+| `my-awesome-project` | `MAP` |
 
 ## Development
 
