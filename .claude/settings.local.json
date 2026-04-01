@@ -13,7 +13,12 @@
       "Bash(gh repo:*)",
       "Bash(git config:*)",
       "Bash(gh api:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npm uninstall:*)",
+      "mcp__tasks__create_task",
+      "mcp__tasks__update_task",
+      "mcp__tasks__link_tasks",
+      "mcp__tasks__get_task"
     ]
   }
 }

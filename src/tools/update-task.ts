@@ -13,6 +13,9 @@ export const schema = {
     priority:     { type: 'string', enum: PRIORITY_LEVELS as unknown as string[] },
     stage:        { type: 'string', enum: WORKFLOW_STAGES as unknown as string[] },
     estimate:     { type: 'string', description: "e.g. '2h', '3d', 'M'" },
+    assignee:     { type: 'string', description: 'Username or display name of the person assigned to this task' },
+    due_date:     { type: 'string', description: 'Due date in ISO 8601 format, e.g. 2025-12-31' },
+    actor:        { type: 'string', description: 'Username of the person performing this action (recorded in history)' },
     project_path: { type: 'string', description: 'Absolute path to project root (optional)' },
   },
   required: ['task_id'],
@@ -28,14 +31,17 @@ export async function handler(args: Record<string, unknown>, projectPath: string
   if (args.priority !== undefined)    updates.priority = args.priority as Priority;
   if (args.stage !== undefined)       updates.stage = args.stage as WorkflowStage;
   if (args.estimate !== undefined)    updates.estimate = args.estimate;
+  if (args.assignee !== undefined)    updates.assignee = args.assignee;
+  if (args.due_date !== undefined)    updates.due_date = args.due_date;
+  const actor = args.actor as string | undefined;
 
   if (Object.keys(updates).length === 0) {
-    throw new Error('No fields to update. Provide at least one of: title, description, type, priority, stage, estimate');
+    throw new Error('No fields to update. Provide at least one of: title, description, type, priority, stage, estimate, assignee, due_date');
   }
 
   const db = getDb(projectPath);
   ensureProject(db, projectPath);
-  const task = updateTask(db, taskId, updates);
+  const task = updateTask(db, taskId, updates, actor);
 
   return [
     `Updated ${task.task_id}`,

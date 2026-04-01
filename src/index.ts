@@ -6,6 +6,7 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
+import { startWebUI } from './web.js';
 import * as createTask from './tools/create-task.js';
 import * as getTask from './tools/get-task.js';
 import * as updateTask from './tools/update-task.js';
@@ -110,6 +111,9 @@ process.on('SIGINT', () => process.exit(0));
 process.on('SIGTERM', () => process.exit(0));
 
 async function main() {
+  const port = parseInt(process.env.CLAUDE_TASKS_PORT ?? '7654', 10);
+  startWebUI(port);
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('claude-task-mcp running (stdio)');

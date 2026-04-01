@@ -28,6 +28,8 @@ const SCHEMA = `
     stage       TEXT    NOT NULL DEFAULT 'ideation'
                   CHECK(stage IN ('ideation','design','refinement','estimated','planned','in-progress','complete','deployed')),
     estimate    TEXT,
+    assignee    TEXT,
+    due_date    TEXT,
     created_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
     updated_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
     UNIQUE(project_id, task_number)
@@ -47,6 +49,17 @@ const SCHEMA = `
     link_type    TEXT    NOT NULL CHECK(link_type IN ('blocks','depends-on','relates-to')),
     UNIQUE(from_task_id, to_task_id, link_type)
   );
+
+  CREATE TABLE IF NOT EXISTS task_history (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_id    INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+    actor      TEXT,
+    event_type TEXT    NOT NULL CHECK(event_type IN ('created','stage_changed','field_changed','comment_added','link_added')),
+    field      TEXT,
+    old_value  TEXT,
+    new_value  TEXT,
+    created_at TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+  );
 `;
 
 export function getDb(projectPath: string): Database.Database {
@@ -61,6 +74,11 @@ export function getDb(projectPath: string): Database.Database {
   const db = new Database(dbPath);
 
   db.exec(SCHEMA);
+
+  // Migrations for columns added after initial schema
+  const columns = (db.prepare("PRAGMA table_info('tasks')").all() as Array<{ name: string }>).map(r => r.name);
+  if (!columns.includes('assignee'))  db.exec('ALTER TABLE tasks ADD COLUMN assignee TEXT');
+  if (!columns.includes('due_date'))  db.exec('ALTER TABLE tasks ADD COLUMN due_date TEXT');
 
   dbCache.set(resolved, db);
   return db;

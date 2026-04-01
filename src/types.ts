@@ -42,6 +42,8 @@ export interface Task {
   priority: Priority;
   stage: WorkflowStage;
   estimate: string | null;
+  assignee: string | null;
+  due_date: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -60,6 +62,20 @@ export interface TaskLink {
   link_type: LinkType;
 }
 
+export const HISTORY_EVENT_TYPES = ['created', 'stage_changed', 'field_changed', 'comment_added', 'link_added'] as const;
+export type HistoryEventType = typeof HISTORY_EVENT_TYPES[number];
+
+export interface TaskHistoryEntry {
+  id: number;
+  task_id: number;
+  actor: string | null;
+  event_type: HistoryEventType;
+  field: string | null;
+  old_value: string | null;
+  new_value: string | null;
+  created_at: string;
+}
+
 export interface TaskWithDetails extends Task {
   comments: TaskComment[];
   links: Array<{
@@ -68,6 +84,7 @@ export interface TaskWithDetails extends Task {
     related_task_id: string;
     related_task_title: string;
   }>;
+  history: TaskHistoryEntry[];
 }
 
 export interface ProjectStats {

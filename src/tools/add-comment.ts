@@ -7,6 +7,7 @@ export const schema = {
   properties: {
     task_id:      { type: 'string', description: 'Task ID, e.g. CTM-0001' },
     body:         { type: 'string', description: 'Comment text' },
+    actor:        { type: 'string', description: 'Username of the person performing this action (recorded in history)' },
     project_path: { type: 'string', description: 'Absolute path to project root (optional)' },
   },
   required: ['task_id', 'body'],
@@ -14,11 +15,12 @@ export const schema = {
 
 export async function handler(args: Record<string, unknown>, projectPath: string): Promise<string> {
   const taskId = args.task_id as string;
-  const body = args.body as string;
+  const body   = args.body as string;
+  const actor  = args.actor as string | undefined;
 
   const db = getDb(projectPath);
   ensureProject(db, projectPath);
-  const comment = addComment(db, taskId, body);
+  const comment = addComment(db, taskId, body, actor);
 
   return `Comment added to ${taskId} at ${comment.created_at}`;
 }

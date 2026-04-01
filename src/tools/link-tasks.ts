@@ -9,6 +9,7 @@ export const schema = {
     from_task_id: { type: 'string', description: 'Source task ID, e.g. CTM-0001' },
     to_task_id:   { type: 'string', description: 'Target task ID, e.g. CTM-0002' },
     link_type:    { type: 'string', enum: LINK_TYPES as unknown as string[], description: 'Relationship type' },
+    actor:        { type: 'string', description: 'Username of the person performing this action (recorded in history)' },
     project_path: { type: 'string', description: 'Absolute path to project root (optional)' },
   },
   required: ['from_task_id', 'to_task_id', 'link_type'],
@@ -23,9 +24,11 @@ export async function handler(args: Record<string, unknown>, projectPath: string
     throw new Error(`Invalid link_type "${linkType}". Must be one of: ${LINK_TYPES.join(', ')}`);
   }
 
+  const actor = args.actor as string | undefined;
+
   const db = getDb(projectPath);
   ensureProject(db, projectPath);
-  linkTasks(db, fromTaskId, toTaskId, linkType);
+  linkTasks(db, fromTaskId, toTaskId, linkType, actor);
 
   return `Linked: ${fromTaskId} ${linkType} ${toTaskId}`;
 }
