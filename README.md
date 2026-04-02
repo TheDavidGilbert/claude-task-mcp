@@ -19,7 +19,7 @@ Tasks are scoped to the current project directory and stored in `.claude-tasks/t
 ## Installation
 
 ```bash
-git clone https://github.com/your-org/claude-task-mcp
+git clone https://github.com/TheDavidGilbert/claude-task-mcp
 cd claude-task-mcp
 npm install
 npm run build
@@ -134,10 +134,21 @@ Open `http://localhost:5173` to drive all tools interactively.
 
 ## .gitignore
 
-Add `.claude-tasks/` to your project's `.gitignore` to keep the task database local:
+Add `.claude-tasks/` to **every project** that uses this server. The SQLite database is held open by the MCP server process, which means:
+
+- Git operations on a locked `.db` file will fail or behave unpredictably on Windows
+- SQLite also writes `-wal` and `-shm` journal files alongside the database while it's open — committing those mid-session will corrupt the snapshot
+- The database is local state (task IDs, history) that has no meaning outside your machine
 
 ```
 .claude-tasks/
+```
+
+This repo's own `.gitignore` already includes this entry as an example. If you forget and accidentally stage the file, run:
+
+```bash
+git rm --cached .claude-tasks/tasks.db
+echo '.claude-tasks/' >> .gitignore
 ```
 
 ## License

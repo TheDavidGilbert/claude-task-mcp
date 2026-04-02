@@ -171,6 +171,11 @@ function renderPage(data: PageData, filterStage: string, filterType: string, fil
     : '';
 
   // Task rows
+  const colGrid = 'grid-template-columns:110px 62px 70px 110px 1fr 120px 52px 52px';
+  const taskHeader = `<div style="display:grid;${colGrid};align-items:center;gap:0;padding:6px 20px;background:#f8fafc;border-bottom:2px solid #e2e8f0;font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:.4px;text-transform:uppercase">
+    <span>Ticket</span><span>Type</span><span>Priority</span><span>Stage</span><span>Title</span><span>Assignee</span><span>Est.</span><span></span>
+  </div>`;
+
   const taskRows = tasks.map(t => {
     const stageColor    = STAGE_COLORS[t.stage]    ?? '#64748b';
     const typeColor     = TYPE_COLORS[t.type]      ?? '#6b7280';
@@ -183,15 +188,15 @@ function renderPage(data: PageData, filterStage: string, filterType: string, fil
       : '';
 
     return `<div class="row" style="border-bottom:1px solid #f1f5f9">
-      <div style="display:flex;align-items:center;gap:8px;padding:10px 20px;flex-wrap:wrap;min-height:44px">
-        <a href="${detailHref}" style="font-size:12px;color:#94a3b8;min-width:82px;flex-shrink:0;text-decoration:none;font-family:ui-monospace,monospace" onclick="event.stopPropagation()">${esc(t.task_id)}</a>
-        ${badge(t.type, typeColor)}
-        ${badge(t.priority, priorityColor)}
-        ${badge(t.stage, stageColor)}
-        <span style="flex:1;font-size:14px;color:#1e293b;font-weight:500;min-width:180px">${esc(t.title)}</span>
-        ${t.assignee ? `<span style="font-size:12px;color:#64748b;flex-shrink:0;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:2px 8px">@${esc(t.assignee)}</span>` : ''}
-        ${t.estimate ? `<span style="font-size:12px;color:#94a3b8;flex-shrink:0">${esc(t.estimate)}</span>` : ''}
-        ${hasDesc ? `<button onclick="x(${t.id})" style="font-size:11px;color:#94a3b8;flex-shrink:0;background:none;border:none;cursor:pointer;padding:2px 4px" id="a${t.id}">▼ desc</button>` : ''}
+      <div style="display:grid;${colGrid};align-items:center;gap:0;padding:10px 20px;min-height:44px">
+        <a href="${detailHref}" style="font-size:13px;font-weight:700;color:#1e293b;text-decoration:none;font-family:ui-monospace,monospace;letter-spacing:.2px" onclick="event.stopPropagation()">${esc(t.task_id)}</a>
+        <span>${badge(t.type, typeColor)}</span>
+        <span>${badge(t.priority, priorityColor)}</span>
+        <span>${badge(t.stage, stageColor)}</span>
+        <span style="font-size:14px;color:#1e293b;font-weight:500;padding-right:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.title)}</span>
+        <span style="font-size:12px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.assignee ? `<span style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:2px 7px">@${esc(t.assignee)}</span>` : ''}</span>
+        <span style="font-size:12px;color:#94a3b8">${t.estimate ? esc(t.estimate) : ''}</span>
+        <span>${hasDesc ? `<button onclick="x(${t.id})" style="font-size:11px;color:#94a3b8;background:none;border:none;cursor:pointer;padding:2px 4px" id="a${t.id}">▼ desc</button>` : ''}</span>
       </div>
       ${descBlock}
     </div>`;
@@ -252,7 +257,7 @@ ${MARKDOWN_CSS}
 <div class="summary">${tasks.length} task${tasks.length !== 1 ? 's' : ''}${hasFilters ? ' (filtered)' : ''}</div>
 
 <div class="tasks">
-  ${tasks.length > 0 ? taskRows : emptyState}
+  ${tasks.length > 0 ? taskHeader + taskRows : emptyState}
 </div>
 
 <script>
